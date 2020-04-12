@@ -9,7 +9,7 @@ for light_idx in range(1,8):
             v_cmd = str(float(volume) / 10)
             v_name = str(volume)
             n = str(noise_idx)
-            cmd = f'sox -m -v1.0 no_processing_sound/voice/light{l}_A4_UH.wav -v{v_cmd}  no_processing_sound/noise/noise{n}.wav learning_sample/light/{l}_{v_name}_{n}.wav trim 0 3'
+            cmd = f'sox -m -v1.0 no_processing_sound/voice/light_A4_UH_{l}.wav -v{v_cmd}  no_processing_sound/noise/noise{n}.wav learning_sample/light/{l}_{v_name}_{n}.wav trim 0 3'
             subprocess.check_output(cmd, shell=True)
 
 for pull_idx in range(1,8):
@@ -19,5 +19,5 @@ for pull_idx in range(1,8):
             v_cmd = str(float(volume) / 10)
             v_name = str(volume)
             n = str(noise_idx)
-            cmd = f'sox -m -v1.0 no_processing_sound/voice/pull{l}_A4_UH.wav -v{v_cmd}  no_processing_sound/noise/noise{n}.wav learning_sample/pull/{l}_{v_name}_{n}.wav trim 0 3'
+            cmd = f'sox -m -v1.0 no_processing_sound/voice/pull_A4_UH_{l}.wav -v{v_cmd}  no_processing_sound/noise/noise{n}.wav learning_sample/pull/{l}_{v_name}_{n}.wav trim 0 3'
             subprocess.check_output(cmd, shell=True)
