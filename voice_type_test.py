@@ -4,6 +4,8 @@ from mfcc import *
 import glob
 from sklearn.metrics import classification_report, accuracy_score
 import csv
+from sklearn.model_selection import cross_val_score
+
 
 if __name__ == "__main__":
 
@@ -46,11 +48,19 @@ if __name__ == "__main__":
         test_label_name = test_voice.split('/')[2].split('_')[0]
         test_label = np.append(test_label, test_label_name)
 
-        clf = SVC(kernel='linear', C=1).fit(train_data, train_label)
-        score = clf.score(test_data, test_label)
+        clf = SVC(kernel='rbf', C=1).fit(train_data, train_label)
 
-        print(score)
+        # # 検証
+        # score = clf.score(test_data, test_label)
+        # print(score)
 
+        # 交差検証
+        scores = cross_val_score(clf, train_data, train_label)
+        # 各分割におけるスコア
+        print('Cross-Validation scores: {}'.format(scores))
+        # スコアの平均値
+        import numpy as np
+        print('Average score: {}'.format(np.mean(scores)))
 
     #特徴データをテキストに出力
     # feature_train_data=np.hstack((train_label.reshape(len(train_label),1),train_data))
