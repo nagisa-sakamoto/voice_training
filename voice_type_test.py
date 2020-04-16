@@ -44,8 +44,7 @@ if __name__ == "__main__":
         else:
             train_data = np.vstack((train_data,feature))
         train_label = np.append(train_label,'pull')
-    print(train_data)
-    print(train_label)
+
     clf = SVC(kernel='rbf', C=1)
     if args.cross_validation :
         # 交差検証
