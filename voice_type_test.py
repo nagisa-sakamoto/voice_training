@@ -5,9 +5,17 @@ import glob
 from sklearn.metrics import classification_report, accuracy_score
 import csv
 from sklearn.model_selection import cross_val_score
-
+import argparse
+from sklearn.model_selection import StratifiedKFold
 
 if __name__ == "__main__":
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-c", "--cross-validation",
+                        help="execute cross validation test",
+                        action="store_true",
+                        default=False)
+    args = parser.parse_args()
 
     files_name_light = glob.glob("learning_sample/light/*.wav")
     files_name_pull = glob.glob("learning_sample/pull/*.wav")
@@ -36,9 +44,24 @@ if __name__ == "__main__":
         else:
             train_data = np.vstack((train_data,feature))
         train_label = np.append(train_label,'pull')
+    print(train_data)
+    print(train_label)
+    clf = SVC(kernel='rbf', C=1)
+    if args.cross_validation :
+        # 交差検証
+        stratifiedkfold = StratifiedKFold(n_splits=10)
+        scores = cross_val_score(clf, train_data, train_label, cv=stratifiedkfold)
+        # 各分割におけるスコア
+        print('Cross-Validation scores: {}'.format(scores))
+        # スコアの平均値
+        import numpy as np
+        print('Average score: {}'.format(np.mean(scores)))
+
+    # SVC学習
+    clf.fit(train_data, train_label)
 
     # ここにテストデータを入れる
-    test_voices = glob.glob(" no_processing_sound/voice/*.wav")
+    test_voices = glob.glob("no_processing_sound/voice/*.wav")
     for test_voice in test_voices:
         test_feature = get_feature(test_voice, nfft, nceps)
         if len(test_data) == 0:
@@ -48,19 +71,9 @@ if __name__ == "__main__":
         test_label_name = test_voice.split('/')[2].split('_')[0]
         test_label = np.append(test_label, test_label_name)
 
-        clf = SVC(kernel='rbf', C=1).fit(train_data, train_label)
-
-        # # 検証
-        # score = clf.score(test_data, test_label)
-        # print(score)
-
-        # 交差検証
-        scores = cross_val_score(clf, train_data, train_label)
-        # 各分割におけるスコア
-        print('Cross-Validation scores: {}'.format(scores))
-        # スコアの平均値
-        import numpy as np
-        print('Average score: {}'.format(np.mean(scores)))
+        # 検証
+        score = clf.score(test_data, test_label)
+        print(score)
 
     #特徴データをテキストに出力
     # feature_train_data=np.hstack((train_label.reshape(len(train_label),1),train_data))
